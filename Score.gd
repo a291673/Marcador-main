@@ -8,6 +8,7 @@ const NEG = -10
 const Ratio = [0, 20, 40, 60, 70, 80, 85, 90, 95, 100]
 const VX = [[50,80], [90,120], [130,150], [150,180], [190,220]]
 const VY = [[30,60], [55,90], [80,120], [110,150], [150,190]]
+var key = 0
 const Digits = [
 	 preload("res://images/0.png"),
 	 preload("res://images/1.png"),
@@ -29,12 +30,16 @@ var gamer = null
 var nwait = 0
 var penalty = NEG
 var points = 0
+var gondo
+var gondoN = 10
 
 func _ready():
 	var scr = get_viewport_rect().size
 	screenW = scr.x
 	screenH = scr.y
 	randomize()
+	key = int(rand_range(0,10))
+	print(key)
 	z_index = 1
 	reset()
 	
@@ -49,14 +54,13 @@ func _input(event):
 		$refresh.paused = pause 
 		$start.paused = pause
 		emit_signal("pause", pause)
-	elif event is InputEventKey:
-		if not get_tree().paused and event.is_pressed():
-			var key = event.scancode - KEY_0
-			if key in range(0,9):
-				get_tree().get_root().set_disable_input(true)
-				gamer = key
-				emit_signal("digit_key", key)
-				start()
+				
+func emit(id):
+	get_tree().get_root().set_disable_input(true)
+	key = id
+	gamer = key
+	emit_signal("digit_key", key)
+	start()
 
 func get_vel():
 	var factor = 2.0
@@ -80,22 +84,20 @@ func update_score(id):
 		score_replay()
 
 func reset():
+	gondo = int(rand_range(0,9))
+	$search.setImage(gondo)
 	penalty = NEG
 	level += 1
 	left = 0
 	nwait = 0
 	gamer = null
-	$wait1.stop()
-	$wait2.stop()
 	$start.start()
 	get_tree().get_root().set_disable_input(false)
-	Engine.time_scale = 0.4 # slow down
 
 func print_score():
-	$score_label.text = "Level: "+str(level)+" Wins: "+str(score)+" Points: "+str(points)
+	$score_label.text = "Level: "+str(level)+" Points: "+str(score)+" Gondo: "+str(gondo)
 
 func score_and_reset(ratio, tie=false):
-	score = round((score + ratio) / 2.0)
 	$end.pitch_scale = 1.5 if tie else 1.0 # empate
 	$end.play()
 	print_score()
@@ -106,7 +108,6 @@ func score_replay():
 	score_and_reset(pts)
 
 func _on_end_finished():
-	reset()
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene("res://Main.tscn")
 
@@ -123,13 +124,7 @@ func _on_wait2_timeout():
 		6: if nwait>3: score_and_reset(80+p, true)
 		_: if nwait>4: score_and_reset(70+p, true)
 
-func _on_start_timeout():
+func endthis():
 	$end.play()
-
 func _on_refresh_timeout():
-	if gamer:
-		points += 20
-	else:
-		points  += penalty
-		penalty += NEG
 	print_score()

@@ -22,7 +22,7 @@ playback/repeat = true
 
 [node name="bounce" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
-volume_db = -10.0
+volume_db = -3.158
 pitch_scale = 0.5
 
 [node name="out" type="AudioStreamPlayer" parent="."]

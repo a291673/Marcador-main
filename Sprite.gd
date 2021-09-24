@@ -18,15 +18,15 @@ func _ready():
 	# warning-ignore:return_value_discarded
 	Score.connect("pause", self, "pause")
 	$efectox.interpolate_property(self, 'scale:x',
-		null, 0.14, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0.5, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$efectoy.interpolate_property(self, 'scale:y',
-		null, 0.12, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0.5, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$gamble.interpolate_property(self, 'modulate:a',
 		null, 0.5, 0.5, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
 	$efecto_final.interpolate_property(self, 'modulate:a',
 		null, 0, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	spin = rand_range(-PI, PI)
-	set_position(Vector2(rand_range(250,screensize.x-250), rand_range(150,screensize.y-150)))
+	set_position(Vector2(rand_range(50,screensize.x-50), rand_range(50,screensize.y-50)))
 	vel = Score.get_vel()
 	set_process(true)
 
@@ -37,23 +37,29 @@ func _process(delta):
 	if pos.x+width >= screensize.x or pos.x-width <= 0:
 		vel.x *= -1
 		$efectox.start()
-		if not $bounce.playing: $bounce.play()
-		if not bouncex:
-			bouncex = true
-			if bouncey: $efecto_final.start()	
+		#if not bouncex:
+		#	bouncex = true
+		#	if bouncey: $efecto_final.start()	
 	if pos.y+height >= screensize.y or pos.y-height <= 0:
 		vel.y *= -1
 		$efectoy.start()
-		if not $bounce.playing: $bounce.play()
-		if not bouncey:
-			bouncey = true
-			if bouncex: $efecto_final.start()
+		#if not bouncey:
+		#	bouncey = true
+		#	if bouncex: $efecto_final.start()
 	set_position(pos)
 
-func _unhandled_input(event):
-	if event is InputEventMouseButton and event.pressed and not event.is_echo() and event.button_index == BUTTON_LEFT:
-		$efecto_final.start()
-		
+func _input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+		if get_rect().has_point(to_local(event.position)):
+			if(id == Score.gondo):
+				Score.score += 50
+				Score.gondoN += 5
+				$bounce.play()
+				Score.endthis()
+			else:
+				Score.score -= 20
+				$efecto_final.start()
+
 
 func choosen(digit): # user-signal
 	selected = (digit == id)

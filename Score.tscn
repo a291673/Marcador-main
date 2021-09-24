@@ -1,18 +1,20 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Score.gd" type="Script" id=1]
 [ext_resource path="res://fonts/score.tres" type="DynamicFont" id=2]
-[ext_resource path="res://audio/bet.wav" type="AudioStream" id=3]
+[ext_resource path="res://audio/bounce.wav" type="AudioStream" id=3]
+[ext_resource path="res://images/3.png" type="Texture" id=4]
+[ext_resource path="res://search.gd" type="Script" id=5]
 
 [node name="global" type="Node2D"]
 pause_mode = 2
 script = ExtResource( 1 )
 
 [node name="score_label" type="Label" parent="."]
-margin_left = 199.274
-margin_top = 8.0
-margin_right = 419.274
-margin_bottom = 45.3663
+margin_left = 202.838
+margin_top = 16.909
+margin_right = 422.838
+margin_bottom = 54.2753
 custom_fonts/font = ExtResource( 2 )
 text = "Score: 0"
 __meta__ = {
@@ -20,7 +22,7 @@ __meta__ = {
 }
 
 [node name="refresh" type="Timer" parent="."]
-wait_time = 0.25
+wait_time = 1.217
 autostart = true
 
 [node name="start" type="Timer" parent="."]
@@ -36,7 +38,19 @@ wait_time = 3.5
 
 [node name="end" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
-volume_db = 1.0
+volume_db = 3.737
+
+[node name="search" type="TextureRect" parent="."]
+margin_left = 762.22
+margin_top = -0.254379
+margin_right = 827.22
+margin_bottom = 64.7456
+texture = ExtResource( 4 )
+expand = true
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [connection signal="timeout" from="refresh" to="." method="_on_refresh_timeout"]
 [connection signal="timeout" from="start" to="." method="_on_start_timeout"]
